@@ -5,11 +5,17 @@ defmodule Harbor.Plug do
   plug :dispatch
 
   get "/:did/:cid" do
-    case Harbor.Did.get_did_document(did) do
+    case Harbor.Did.get_pds(did) do
       { :error, err } ->
         send_resp(conn, 400, err)
-      { :ok, body } ->
-        send_resp(conn, 200, Poison.encode!(body))
+      { :ok, pds } ->
+        case Harbor.Pds.get_blob(pds, did, cid) do
+          { :ok, data } ->
+            send_resp(conn, 200, data)
+
+          { :error, err } ->
+            send_resp(conn, 400, err)
+        end 
     end
   end
 
