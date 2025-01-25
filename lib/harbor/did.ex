@@ -1,14 +1,25 @@
 defmodule Harbor.Did do
 
   def get_pds(did) do
-    case get_did_document(did) do
-      { :ok, doc } ->
-        svc = doc["service"] |> Enum.find fn x -> x["id"] == "#atproto_pds" end
-        { :ok, svc["serviceEndpoint"] }
+    case Cachex.get(:harbor_cache, did) do
+      { :ok, pds } when not is_nil(pds) ->
+        { :ok, pds }
 
-      { :error, err } ->
-        { :error, err }
+      _ ->
+        case get_did_document(did) do
+          { :ok, doc } ->
+            svc = doc["service"] |> Enum.find(fn x -> 
+              x["id"] == "#atproto_pds"
+            end)
+            
+            Cachex.put(:harbor_cache, did, svc["serviceEndpoint"], ttl: 3600)
+            { :ok, svc["serviceEndpoint"] }
+
+          { :error, err } ->
+            { :error, err }
+        end
     end
+    
   end
 
 	def get_did_document(did) do

@@ -4,6 +4,19 @@ defmodule Harbor.Plug do
   plug :match
   plug :dispatch
 
+  get "/" do
+    send_resp(conn, 200, """
+     _
+    /|\\
+   /_|_\\      harbor is running, choo choo~
+ ____|____    https://github.com/shinolabs/harbor
+ \\_o_o_o_/
+~~ |     ~~~~~
+___t_________
+
+    """)
+  end
+
   get "/:did/:cid" do
     case Harbor.Did.get_pds(did) do
       { :error, err } ->
