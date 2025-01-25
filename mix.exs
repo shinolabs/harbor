@@ -22,7 +22,10 @@ defmodule Harbor.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      { :plug_cowboy, "~> 2.0" }
+      { :plug_cowboy, "~> 2.0" },
+      { :cachex, "~> 4.0" },
+      { :httpoison, "~> 2.0" },
+      { :poison, "~> 6.0" }
     ]
   end
 end
