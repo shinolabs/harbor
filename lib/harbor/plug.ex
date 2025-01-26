@@ -21,7 +21,7 @@ ___t_________
     case Harbor.Disk.get_blob_from_cache(did, cid) do
       { :ok, blob } ->
         IO.puts "hit disk cache for #{did}/#{cid}"
-        send_resp(conn, 200, blob)
+        respond_with_cache(conn, did, cid, blob)
 
       { :error, _ } ->
         case Harbor.Did.get_pds(did) do
@@ -31,7 +31,7 @@ ___t_________
             case Harbor.Pds.get_blob(pds, did, cid) do
               { :ok, data } ->
                 Harbor.Disk.cache_blob(did, cid, data)
-                send_resp(conn, 200, data)
+                respond_with_cache(conn, did, cid, data)
 
               { :error, err } ->
                 send_resp(conn, 400, err)
@@ -43,5 +43,16 @@ ___t_________
 
   match _ do
     send_resp(conn, 404, "Invalid path.")
+  end
+
+  def respond_with_cache(conn, did, cid, blob) do
+    with { :ok, etag } <- Harbor.Disk.get_etag_for(did, cid) do
+      conn |>
+        put_resp_header("cache-control", "public, max-age=3600") |>
+        put_resp_header("etag", etag) |>
+        send_resp(200, blob)
+    else
+      _ -> send_resp(conn, 500, "An unexpected error has occured.")
+    end
   end
 end

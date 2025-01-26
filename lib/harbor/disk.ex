@@ -39,4 +39,18 @@ defmodule Harbor.Disk do
         { :error, err }
     end
   end
+
+  def get_etag_for(did, cid) do
+    case File.stat(get_cache_file_name(did, cid)) do
+      { :ok, stat } ->
+        %{ size: size, mtime: mtime } = stat
+        hash = { size, mtime } |>
+          :erlang.phash2 |>
+          Integer.to_string(16)
+        { :ok, hash }
+
+      { :error, err } ->
+        { :error, err }
+    end
+  end
 end
