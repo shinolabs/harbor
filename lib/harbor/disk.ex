@@ -14,43 +14,47 @@ defmodule Harbor.Disk do
     case cached?(did, cid) do
       true ->
         case File.read(get_cache_file_name(did, cid)) do
-          { :ok, binary } ->
-            { :ok, binary }
+          {:ok, binary} ->
+            {:ok, binary}
 
-          { :error, err } ->
-            { :error, err }
+          {:error, err} ->
+            {:error, err}
         end
 
       false ->
-        { :error, "File not found in cache." }
+        {:error, "File not found in cache."}
     end
   end
 
   def cache_blob(did, cid, data) do
     if not File.exists?(@cache_folder) do
-      File.mkdir! @cache_folder
+      File.mkdir!(@cache_folder)
     end
+
     case File.write(get_cache_file_name(did, cid), data) do
       :ok ->
-        IO.puts "cached #{did} #{cid}"
-        { :ok, "File written" }
+        IO.puts("cached #{did} #{cid}")
+        {:ok, "File written"}
 
-      { :error, err } ->
-        { :error, err }
+      {:error, err} ->
+        {:error, err}
     end
   end
 
   def get_etag_for(did, cid) do
     case File.stat(get_cache_file_name(did, cid)) do
-      { :ok, stat } ->
-        %{ size: size, mtime: mtime } = stat
-        hash = { size, mtime } |>
-          :erlang.phash2 |>
-          Integer.to_string(16)
-        { :ok, hash }
+      {:ok, stat} ->
+        %{size: size, mtime: mtime} = stat
 
-      { :error, err } ->
-        { :error, err }
+        hash =
+          {size, mtime}
+          |> :erlang.phash2()
+          |> Integer.to_string(16)
+
+        {:ok, hash}
+
+      {:error, err} ->
+        {:error, err}
     end
   end
 end

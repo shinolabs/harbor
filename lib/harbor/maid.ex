@@ -14,23 +14,23 @@ defmodule Harbor.Maid do
   end
 
   def handle_info(:work, state) do
-    IO.puts "Maid sweeping old cached files..."
+    IO.puts("Maid sweeping old cached files...")
 
-    Path.wildcard("./cache/*") |>
-    Enum.map(fn x ->
-      %{ atime: atime } = File.stat! x
-      { x, atime }
-    end) |>
-    Enum.filter(fn { _, atime } ->
+    Path.wildcard("./cache/*")
+    |> Enum.map(fn x ->
+      %{atime: atime} = File.stat!(x)
+      {x, atime}
+    end)
+    |> Enum.filter(fn {_, atime} ->
       secs_file = :calendar.datetime_to_gregorian_seconds(atime)
-      secs_now = :calendar.datetime_to_gregorian_seconds(:calendar.universal_time)
+      secs_now = :calendar.datetime_to_gregorian_seconds(:calendar.universal_time())
 
       secs_now - secs_file >= @cleanup_min_time
-    end) |>
-    Enum.each(fn { file, _ } ->
-      IO.puts "\t- Removing #{file}..."
+    end)
+    |> Enum.each(fn {file, _} ->
+      IO.puts("\t- Removing #{file}...")
 
-      File.rm file
+      File.rm(file)
     end)
 
     schedule_work()
