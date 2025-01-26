@@ -1,0 +1,14 @@
+version: "3"
+services:
+  harbor:
+    image: shinolabs/harbor
+    container_name: harbor
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    volumes:
+      - type: bind
+        source: ./cache
+        target: /cache
