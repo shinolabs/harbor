@@ -6,9 +6,9 @@ defmodule Harbor.Plug do
 
   get "/" do
     send_resp(conn, 200, """
-     _
-    /|\\
-    /_|_\\      harbor is running, choo choo~
+        _
+       /|\\
+      /_|_\\      harbor is running, choo choo~
     ____|____    https://github.com/shinolabs/harbor
     \\_o_o_o_/
     ~~ |     ~~~~~
