@@ -7,7 +7,8 @@ defmodule Harbor.Application do
   def start(_type, _args) do
     children = [
       { Plug.Cowboy, scheme: :http, plug: Harbor.Plug, options: [ port: 4001 ] },
-      { Cachex, [:harbor_cache] }
+      { Cachex, [:harbor_cache] },
+      Harbor.Maid
     ]
 
     opts = [strategy: :one_for_one, name: Harbor.Supervisor]
