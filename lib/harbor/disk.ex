@@ -1,9 +1,12 @@
 defmodule Harbor.Disk do
-  @cache_folder "./cache"
+
+  def cache_folder do
+    Application.fetch_env!(:harbor, :cache_folder)
+  end
 
   def get_cache_file_name(did, cid) do
     colon_less_did = String.replace(did, ":", "")
-    "#{@cache_folder}/#{colon_less_did}#{cid}"
+    "#{cache_folder()}/#{colon_less_did}#{cid}"
   end
 
   def cached?(did, cid) do
@@ -27,8 +30,8 @@ defmodule Harbor.Disk do
   end
 
   def cache_blob(did, cid, data) do
-    if not File.exists?(@cache_folder) do
-      File.mkdir!(@cache_folder)
+    if not File.exists?(cache_folder()) do
+      File.mkdir!(cache_folder())
     end
 
     case File.write(get_cache_file_name(did, cid), data) do
