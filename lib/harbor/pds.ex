@@ -5,7 +5,7 @@ defmodule Harbor.Pds do
     url = "#{pds}/xrpc/com.atproto.sync.getBlob?did=#{did}&cid=#{cid}"
 
     with {:ok, size} <- get_content_length_header(url),
-         size <= @max_file_size do
+         :ok <- blob_size_constraint(size) do
       case HTTPoison.get(url) do
         {:ok, %{status_code: 200, body: body}} ->
           {:ok, body}
@@ -19,7 +19,15 @@ defmodule Harbor.Pds do
     end
   end
 
-  def get_content_length_header(url) do
+  defp blob_size_constraint(size) do
+    if size <= @max_file_size do
+      {:error, "Blob is too large"}
+    else
+      :ok
+    end
+  end
+
+  defp get_content_length_header(url) do
     case HTTPoison.head(url) do
       {:ok, %{status_code: 200, headers: headers}} ->
         {_, size} =
