@@ -45,12 +45,19 @@ defmodule Harbor.Plug do
     send_resp(conn, 404, "Invalid path.")
   end
 
-  def respond_with_cache(conn, did, cid, blob) do
+  defp respond_with_cache(conn, did, cid, blob) do
     with {:ok, etag} <- Harbor.Disk.get_etag_for(did, cid) do
-      conn
-      |> put_resp_header("cache-control", "public, max-age=#{Application.fetch_env!(:harbor, :time_before_eviction)}")
-      |> put_resp_header("etag", etag)
-      |> send_resp(200, blob)
+      conn =
+        conn
+        |> put_resp_header("cache-control", "public, max-age=#{Application.fetch_env!(:harbor, :time_before_eviction)}")
+        |> put_resp_header("etag", etag)
+      if etag in get_req_header(conn, "if-none-match") do
+        conn
+        |> send_resp(304, "")
+      else
+        conn
+        |> send_resp(200, blob)
+      end
     else
       _ -> send_resp(conn, 500, "An unexpected error has occured.")
     end
