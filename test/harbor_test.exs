@@ -83,11 +83,15 @@ defmodule HarborTest do
   end
 
   test "failed fetch blob but size retreived" do
-    assert {:error, "Could not get blob"} = Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "gonefishing")
+    assert {:error, "Could not get blob"} =
+             Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "gonefishing")
   end
 
   test "failed fetch blob" do
-    assert {:error, "PDS does not report the size of the blob."} = Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "unknown")
-    assert {:error, "PDS does not report the size of the blob."} = Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "invalidsize")
+    assert {:error, "PDS does not report the size of the blob."} =
+             Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "unknown")
+
+    assert {:error, "PDS does not report the size of the blob."} =
+             Harbor.Pds.get_blob("https://pds.example.com", "did:web:example.com", "invalidsize")
   end
 end

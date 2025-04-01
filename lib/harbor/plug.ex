@@ -51,6 +51,7 @@ defmodule Harbor.Plug do
         conn
         |> put_resp_header("cache-control", "public, max-age=#{Application.fetch_env!(:harbor, :time_before_eviction)}")
         |> put_resp_header("etag", etag)
+
       if etag in get_req_header(conn, "if-none-match") do
         conn
         |> send_resp(304, "")
