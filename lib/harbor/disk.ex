@@ -1,5 +1,4 @@
 defmodule Harbor.Disk do
-
   def cache_folder do
     Application.fetch_env!(:harbor, :cache_folder)
   end
