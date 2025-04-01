@@ -13,7 +13,7 @@ defmodule Harbor.Maid do
   def handle_info(:work, state) do
     IO.puts("Maid sweeping old cached files...")
 
-    Path.wildcard("./cache/*")
+    Path.wildcard("#{Harbor.Disk.cache_folder()}/*")
     |> Enum.map(fn x ->
       %{atime: atime} = File.stat!(x)
       {x, atime}
