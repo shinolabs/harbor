@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/multikey/v1",
+    "https://w3id.org/security/suites/secp256k1-2019/v1"
+  ],
+  "alsoKnownAs": [
+    "at://atproto.com"
+  ],
+  "id": "did:plc:ewvi7nxzyoun6zhxrhs64oiz",
+  "service": [
+    {
+      "id": "#atproto_pds",
+      "serviceEndpoint": "https://enoki.us-east.host.bsky.network",
+      "type": "AtprotoPersonalDataServer"
+    }
+  ],
+  "verificationMethod": [
+    {
+      "controller": "did:plc:ewvi7nxzyoun6zhxrhs64oiz",
+      "id": "did:plc:ewvi7nxzyoun6zhxrhs64oiz#atproto",
+      "publicKeyMultibase": "zQ3shunBKsXixLxKtC5qeSG9E4J5RkGN57im31pcTzbNQnm5w",
+      "type": "Multikey"
+    }
+  ]
+}

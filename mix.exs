@@ -25,7 +25,8 @@ defmodule Harbor.MixProject do
       { :plug_cowboy, "~> 2.0" },
       { :cachex, "~> 4.0" },
       { :httpoison, "~> 2.0" },
-      { :poison, "~> 6.0" }
+      { :poison, "~> 6.0" },
+      { :mimic, "~> 1.10", only: :test },
     ]
   end
 end
