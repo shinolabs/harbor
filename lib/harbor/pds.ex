@@ -21,23 +21,28 @@ defmodule Harbor.Pds do
 
   defp blob_size_constraint(size) do
     if size <= @max_file_size do
-      {:error, "Blob is too large"}
-    else
       :ok
+    else
+      {:error, "Blob is too large"}
     end
   end
 
   defp get_content_length_header(url) do
-    case HTTPoison.head(url) do
-      {:ok, %{status_code: 200, headers: headers}} ->
-        {_, size} =
-          headers
-          |> Enum.find(fn {key, _} ->
-            String.match?(key, ~r/content-length/i)
-          end)
+    try do
+      case HTTPoison.head(url) do
+        {:ok, %{status_code: 200, headers: headers}} ->
+          {_, size} =
+            headers
+            |> Enum.find(fn {key, _} ->
+              String.match?(key, ~r/content-length/i)
+            end)
 
-        {:ok, Integer.parse(size)}
+          {:ok, String.to_integer(size)}
 
+        _ ->
+          {:error, "PDS does not report the size of the blob."}
+      end
+    rescue
       _ ->
         {:error, "PDS does not report the size of the blob."}
     end
