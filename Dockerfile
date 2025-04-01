@@ -1,4 +1,4 @@
-FROM elixir:1.18.1-alpine as build
+FROM elixir:1.18.3-alpine as build
 
 COPY . .
 
