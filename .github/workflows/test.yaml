@@ -11,6 +11,7 @@ env:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   test:
@@ -63,5 +64,8 @@ jobs:
     - name: Check Formatting
       run: mix format --check-formatted
 
-    - name: Run tests
-      run: mix test
+    - name: Tests & Coverage
+      uses: josecfreittas/elixir-coverage-feedback-action@v1 # TODO: use hash
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        coverage_threshold: 10 # TODO: Set to 90
